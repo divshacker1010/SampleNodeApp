@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample-node-app
+  namespace: ks
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: sample-node-app
+  template:
+    metadata:
+      labels:
+        app: sample-node-app
+    spec:
+      containers:
+      - name: sample-node-app
+        image: divs10/trial:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: node-service
+  labels:
+    job: node-api
+    app: sample-node-app
+  namespace: ks
+spec:
+  type: LoadBalancer
+  selector:
+    app: sample-node-app
+  ports:
+    - name: web
+      port: 80
+      targetPort: 8000  
+
+---
+
+# apiVersion: monitoring.coreos.com/v1
+# kind: ServiceMonitor
+# metadata:
+#   name: api-service-monitor
+#   labels:
+#     release: prometheus
+#     app: prometheus
+# spec:
+#   jobLabel: job
+#   endpoints:
+#     - interval: 15s
+#       port: web
+#       path: /swagger-stats/metrics
+#   selector:
+#     matchLabels:
+#       app: sample-node-app

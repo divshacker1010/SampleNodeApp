@@ -1,0 +1,25 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    release: prometheus
+  name: api-rules
+spec:
+  groups:
+    - name: api
+      rules: 
+        - alert: Nodedown
+          expr: up{job="node-api"} == 0
+          
+          for: 0m
+          labels:
+            severity: critical
+          annotations:
+            summary: Prometheus target missing {{$labels.instance}}
+        - alert: HostOutOfMemory
+          expr: nodejs_process_memory_heap_used_bytes{job="node-api"}/nodejs_process_memory_heap_total_bytes{job="node-api"}*100 > 80
+          labels:
+            severity: warning
+          
+          annotations:
+            message: "node {{.Labels.instance}} is seeing high memory usage, currently used memory: {{.Value}}%"
