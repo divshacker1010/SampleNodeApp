@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample-node-app
+  namespace: ks
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: sample-node-app
+  template:
+    metadata:
+      labels:
+        app: sample-node-app
+    spec:
+      containers:
+      - name: sample-node-app
+        image: divs10/trial:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
