@@ -5,7 +5,7 @@ metadata:
   labels:
     job: node-api
     app: sample-node-app
-  namespace: ks
+  namespace: node-app
 spec:
   type: LoadBalancer
   selector:
